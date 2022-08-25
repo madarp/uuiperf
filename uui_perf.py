@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
 uui_perf - A long-running program to collect DNS query times and network ping
-statistics over time.
+statistics over time, and transmit to InfluxDB
 """
 import sys
 import re
+import os
 import logging
 from datetime import datetime as dt
 import time
@@ -16,11 +17,13 @@ import subprocess
 import csv
 import signal
 
+from dotenv import load_dotenv
 import dns.message
 import dns.asyncquery
 import dns.asyncresolver
 import dns.exception
-
+from influxdb_client import InfluxDBClient, Point, WritePrecision
+from influxdb_client.client.write_api import SYNCHRONOUS
 
 logger = logging.getLogger(__name__)
 exit_flag = False
@@ -28,15 +31,24 @@ exit_flag = False
 dns_servers = {
     "Cisco OpenDNS": ("208.67.222.222", "208.67.220.220"),
     "Cloudflare":    ("1.1.1.1", "1.0.0.1"),
-    "Google":        ("8.8.8.8", "8.8.4.4"),
-    "Quad9":         ("149.112.112.112",),
+#    "Google":        ("8.8.8.8", "8.8.4.4"),
+#    "Quad9":         ("149.112.112.112",),
 }
 
 ping_servers = [
-    "dns.google.com",
-    "yahoo.com",
-    "ping.ubnt.com"
+    # "dns.google.com",
+    # "yahoo.com",
+    "8.8.8.8"
 ]
+
+
+load_dotenv()
+
+# setup pipe to influxDB
+client = InfluxDBClient(
+    url="https://us-east-1-1.aws.cloud2.influxdata.com",
+    token=os.environ.get("INFLUXDB_TOKEN"),
+    org="madarp@pobox.com")
 
 
 def get_ping_latency_ms():
@@ -113,11 +125,22 @@ async def collect_readings(interval, csvfile):
     while not exit_flag:
         dns_latency_ms = await get_dns_latency_ms()
         latency_ms = get_ping_latency_ms()
+        utc_time = dt.utcnow()
         logger.info(f"dns_latency_ms: {dns_latency_ms:.4f}, ping_latency_ms: {latency_ms:.4f}")
 
         with open(csvfile, 'a') as f:
             csvwriter = csv.writer(f)
-            csvwriter.writerow((dt.now(), f"{dns_latency_ms:.4f}", f"{latency_ms:.4f}"))
+            csvwriter.writerow((utc_time, f"{dns_latency_ms:.4f}", f"{latency_ms:.4f}"))
+
+        data = {
+            "measurement": "latencies",
+            "tags": {"location": "UUI"},
+            "fields": {"dns_latency_ms": dns_latency_ms, "ping_latency_ms": latency_ms},
+        }
+        point = Point.from_dict(data, WritePrecision.NS)
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+        write_api.write(bucket="uuiperf", org="madarp@pobox.com", record=point)
+
         time.sleep(interval)
 
 
@@ -171,7 +194,7 @@ async def main(args):
         '-------------------------------------------------------------------\n'
     )
 
-    csvfields = ['Local_Date', 'DNS_Latency_ms', 'PING_Latency_ms']
+    csvfields = ['UTC_Time', 'DNS_Latency_ms', 'PING_Latency_ms']
     with open(args.csvpath, 'w') as f:
         csvwriter = csv.writer(f)
         csvwriter.writerow(csvfields)
