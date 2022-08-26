@@ -67,7 +67,7 @@ def get_ping_latency_ms():
             logger.error(f"ping timeout on {p}")
             continue
 
-    return sum(times)/len(times)
+    return sum(times)/len(times) if times else 0.0
 
 
 async def get_dns_latency_ms():
@@ -117,7 +117,7 @@ async def get_dns_latency_ms():
         logger.error(f"resolver timeout for {dns_name}")
         times.append(0.0)
 
-    avg_dns_seconds = sum(times)/len(times)
+    avg_dns_seconds = sum(times)/len(times) if times else 0.0
     return avg_dns_seconds * 1000
 
 
