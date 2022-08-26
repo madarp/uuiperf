@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "22e6d5577b3e070cb7efd51a1be1c7953cfc82e18ebf62fe03d4adc7045e7271"
+            "sha256": "83c16be198f5137b0fb38907eceb850c02b6be16e9c56423ca4d69fc17ec697b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -34,11 +34,11 @@
         },
         "influxdb-client": {
             "hashes": [
-                "sha256:adf6dfdf35f7c39cf543b243359d2c0ae79fc462f1ef57a09d0f1623f181796d",
-                "sha256:c65e1efe2e361a65f54238d0630280c217ca7b0502a1942de1e5d541635b719f"
+                "sha256:29bd40934cbdcbc0e914886028bee06ac05051cff5bccaece0457eefb67ace6d",
+                "sha256:3c88127d3501a7101f4b798add611f1eefe3ebeca597f6a9db43339c75330879"
             ],
             "index": "pypi",
-            "version": "==1.31.0"
+            "version": "==1.32.0"
         },
         "python-dateutil": {
             "hashes": [
@@ -48,13 +48,21 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==2.8.2"
         },
-        "rx": {
+        "python-dotenv": {
             "hashes": [
-                "sha256:922c5f4edb3aa1beaa47bf61d65d5380011ff6adcd527f26377d05cb73ed8ec8",
-                "sha256:b657ca2b45aa485da2f7dcfd09fac2e554f7ac51ff3c2f8f2ff962ecd963d91c"
+                "sha256:b7e3b04a59693c42c36f9ab1cc2acc46fa5df8c78e178fc33a8d4cd05c8d498f",
+                "sha256:d92a187be61fe482e4fd675b6d52200e7be63a12b724abbf931a40ce4fa92938"
             ],
-            "markers": "python_version >= '3.6'",
-            "version": "==3.2.0"
+            "index": "pypi",
+            "version": "==0.20.0"
+        },
+        "reactivex": {
+            "hashes": [
+                "sha256:0004796c420bd9e68aad8e65627d85a8e13f293de76656165dffbcb3a0e3fb6a",
+                "sha256:e912e6591022ab9176df8348a653fe8c8fa7a301f26f9931c9d8c78a650e04e8"
+            ],
+            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "version": "==4.0.4"
         },
         "six": {
             "hashes": [
@@ -63,6 +71,14 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
+        },
+        "typing-extensions": {
+            "hashes": [
+                "sha256:25642c956049920a5aa49edcdd6ab1e06d7e5d467fc00e0506c44ac86fbfca02",
+                "sha256:e6d2677a32f47fc7eb2795db1dd15c1f34eff616bcaf2cfb5e997f854fa1c4a6"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==4.3.0"
         },
         "urllib3": {
             "hashes": [
